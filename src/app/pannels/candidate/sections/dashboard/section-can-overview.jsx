@@ -17,7 +17,7 @@ function SectionCandidateOverview() {
 
     const fetchJobCount = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/jobview`);
+            const response = await axios.get(`https://api.edunomad.org/api/jobview`);
             
             let count = 0;
             
@@ -42,7 +42,7 @@ function SectionCandidateOverview() {
     const fetchApplicationCounts = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_URL}/api/applyview`);
+            const response = await axios.get(`https://api.edunomad.org/api/applyview`);
             
             let applications = [];
             

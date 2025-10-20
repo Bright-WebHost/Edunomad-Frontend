@@ -27,7 +27,7 @@ export default function JobView() {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/jobview`);
+      const response = await axios.get(`https://api.edunomad.org/api/jobview`);
       
       // Ensure we're working with an array
       let jobsData = response.data;

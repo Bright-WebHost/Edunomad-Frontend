@@ -28,7 +28,7 @@ function SectionApplyJob() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/jobview/${id}`);
+        const res = await fetch(`https://api.edunomad.org/api/jobview/${id}`);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
@@ -201,7 +201,7 @@ function SectionApplyJob() {
       console.log('Submitting application with userId:', formData.userId);
       console.log('Job title being submitted:', formData.jobTitel);
       
-      const response = await fetch(`${API_URL}/api/apply`, {
+      const response = await fetch(`https://api.edunomad.org/api/apply`, {
         method: 'POST',
         body: submitData,
       });

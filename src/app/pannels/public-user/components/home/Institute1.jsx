@@ -36,7 +36,7 @@ const Institute1 = () => {
   const fetchVacancies = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/jobviewauth`, {
+      const response = await axios.get(`https://api.edunomad.org/api/jobviewauth`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -86,11 +86,11 @@ const Institute1 = () => {
       
       if (formData._id) {
         // Update existing job
-        url = `${API_URL}/api/jobupdate/${formData._id}`;
+        url = `https://api.edunomad.org/api/jobupdate/${formData._id}`;
         method = 'PUT';
       } else {
         // Create new job
-        url = `${API_URL}/api/jobinsert`;
+        url = `https://api.edunomad.org/api/jobinsert`;
         method = 'POST';
       }
 
@@ -167,7 +167,7 @@ const Institute1 = () => {
     if (window.confirm("Are you sure you want to delete this vacancy?")) {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.delete(`${API_URL}/api/jobdelete/${id}`, {
+        const response = await axios.delete(`https://api.edunomad.org/api/jobdelete/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

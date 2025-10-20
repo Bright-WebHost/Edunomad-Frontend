@@ -21,7 +21,7 @@ function CanSavedJobsPage() {
           loadScript("js/custom.js")
         try {
             setLoading(true);
-            const response = await fetch(`${API_URL}/api/applyview`);
+            const response = await fetch(`https://api.edunomad.org/api/applyview`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,7 +59,7 @@ function CanSavedJobsPage() {
             setPopupLoading(true);
             setPopupError(null);
             
-            const response = await fetch(`${API_URL}api/jobview/${jobId}`);
+            const response = await fetch(`https://api.edunomad.org/api/jobview/${jobId}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -85,7 +85,7 @@ function CanSavedJobsPage() {
         try {
             setUpdatingStatus(applicationId);
             
-            const response = await fetch(`${API_URL}/api/applyupate/${applicationId}`, {
+            const response = await fetch(`https://api.edunomad.org/api/applyupate/${applicationId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ function CanSavedJobsPage() {
             const resumePath = job.resume.path;
             // Ensure the path is properly formatted for the URL
             const formattedPath = resumePath.replace(/\\/g, '/');
-            const downloadUrl = `${API_URL}/${formattedPath}`;
+            const downloadUrl = `https://api.edunomad.org/${formattedPath}`;
             
             console.log("Downloading resume from:", downloadUrl);
             

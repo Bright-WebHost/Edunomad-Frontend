@@ -571,7 +571,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
       setFetchError("");
       
       try {
-        const response = await fetch(`${API_URL}/api/applyview`, {
+        const response = await fetch(`https://api.edunomad.org/api/applyview`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -685,7 +685,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
       const normalized = app.resumeUrl.replace(/\\/g, "/");
       const url = normalized.startsWith("http://") || normalized.startsWith("https://")
         ? normalized
-        : `${API_URL}/${normalized}`;
+        : `https://api.edunomad.org/${normalized}`;
       window.open(url, "_blank", "noopener,noreferrer");
     } else {
       alert("Resume not available.");

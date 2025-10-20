@@ -77,7 +77,7 @@ function LoginPage() {
             const top = (window.screen.height - height) / 2;
 
             const popup = window.open(
-                `${API_URL}/api/auth/google`,
+                `https://api.edunomad.org/api/auth/google`,
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
@@ -103,7 +103,7 @@ function LoginPage() {
         setError('');
         
         try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
+            const response = await fetch(`https://api.edunomad.org/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ function LoginPage() {
         setError('');
         
         try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
+            const response = await fetch(`https://api.edunomad.org/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

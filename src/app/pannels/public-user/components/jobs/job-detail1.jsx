@@ -26,7 +26,7 @@ function JobDetail1Page() {
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const res = await fetch(`${API_URL}/api/jobview/${id}`);
+                const res = await fetch(`https://api.edunomad.org/api/jobview/${id}`);
                 if (!res.ok) {
                     throw new Error("Failed to fetch job");
                 }

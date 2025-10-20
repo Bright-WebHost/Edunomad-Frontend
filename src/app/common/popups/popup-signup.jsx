@@ -63,14 +63,14 @@ function SignUpPopup() {
             const top = (window.screen.height - height) / 2;
 
             const popup = window.open(
-                `${API_URL}/api/auth/google`,
+                `https://api.edunomad.org/api/auth/google`,
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
 
             // Listen for message from popup
             const messageHandler = (event) => {
-                if (event.origin !== `${API_URL}`) return;
+                if (event.origin !== `https://api.edunomad.org`) return;
 
                 if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                     const { token, user, requiresRoleCompletion } = event.data;
@@ -150,7 +150,7 @@ function SignUpPopup() {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/auth/register`, {
+            const response = await fetch(`https://api.edunomad.org/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
