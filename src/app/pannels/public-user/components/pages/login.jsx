@@ -14,7 +14,7 @@ function LoginPage() {
     const [showCandidatePassword, setShowCandidatePassword] = useState(false);
     const [showEmployerPassword, setShowEmployerPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-
+ const API_URL = process.env.apiPort || 'http://localhost:7001';
     // Handle Google OAuth message from popup
     useEffect(() => {
         const handleMessage = (event) => {
@@ -77,7 +77,7 @@ function LoginPage() {
             const top = (window.screen.height - height) / 2;
 
             const popup = window.open(
-                'http://localhost:7001/api/auth/google',
+                `${API_URL}/api/auth/google`,
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
@@ -103,7 +103,7 @@ function LoginPage() {
         setError('');
         
         try {
-            const response = await fetch('http://localhost:7001/api/auth/login', {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ function LoginPage() {
         setError('');
         
         try {
-            const response = await fetch('http://localhost:7001/api/auth/login', {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

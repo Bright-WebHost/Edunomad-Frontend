@@ -559,7 +559,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
-
+ const API_URL = process.env.apiPort || 'http://localhost:7001';
   /* ------------------------------- Effects -------------------------------- */
   useEffect(() => {
     if (!isOpen) return;
@@ -571,7 +571,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
       setFetchError("");
       
       try {
-        const response = await fetch("http://localhost:7001/api/applyview", {
+        const response = await fetch(`${API_URL}/api/applyview`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -685,7 +685,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
       const normalized = app.resumeUrl.replace(/\\/g, "/");
       const url = normalized.startsWith("http://") || normalized.startsWith("https://")
         ? normalized
-        : `http://localhost:7001/${normalized}`;
+        : `${API_URL}/${normalized}`;
       window.open(url, "_blank", "noopener,noreferrer");
     } else {
       alert("Resume not available.");

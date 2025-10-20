@@ -18,7 +18,7 @@ function JobDetail1Page() {
     const sidebarConfig = {
         showJobInfo: true
     }
-
+ const API_URL = process.env.apiPort || 'http://localhost:7001';
     useEffect(() => {
         loadScript("js/custom.js");
     }, []);
@@ -26,7 +26,7 @@ function JobDetail1Page() {
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const res = await fetch(`http://localhost:7001/api/jobview/${id}`);
+                const res = await fetch(`${API_URL}/api/jobview/${id}`);
                 if (!res.ok) {
                     throw new Error("Failed to fetch job");
                 }

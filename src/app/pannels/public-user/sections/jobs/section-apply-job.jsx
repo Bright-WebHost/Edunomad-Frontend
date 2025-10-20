@@ -9,7 +9,7 @@ function SectionApplyJob() {
   const params = useParams();
   const { id } = params;
   const [job, setJob] = useState({});
-
+ const API_URL = process.env.apiPort || 'http://localhost:7001';
   // Clean up any existing modal backdrops on component mount
   useEffect(() => {
     // Remove Bootstrap modal backdrops
@@ -28,7 +28,7 @@ function SectionApplyJob() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const res = await fetch(`http://localhost:7001/api/jobview/${id}`);
+        const res = await fetch(`${API_URL}/api/jobview/${id}`);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
@@ -201,7 +201,7 @@ function SectionApplyJob() {
       console.log('Submitting application with userId:', formData.userId);
       console.log('Job title being submitted:', formData.jobTitel);
       
-      const response = await fetch('http://localhost:7001/api/apply', {
+      const response = await fetch(`${API_URL}/api/apply`, {
         method: 'POST',
         body: submitData,
       });

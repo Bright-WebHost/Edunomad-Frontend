@@ -9,7 +9,7 @@ export default function JobView() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+ const API_URL = process.env.apiPort || 'http://localhost:7001';
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
@@ -27,7 +27,7 @@ export default function JobView() {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('http://localhost:7001/api/jobview');
+      const response = await axios.get(`${API_URL}/api/jobview`);
       
       // Ensure we're working with an array
       let jobsData = response.data;

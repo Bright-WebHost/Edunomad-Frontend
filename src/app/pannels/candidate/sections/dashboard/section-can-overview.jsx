@@ -3,6 +3,7 @@ import CountUp from "react-countup";
 import axios from 'axios';
 
 function SectionCandidateOverview() {
+     const API_URL = process.env.apiPort || 'http://localhost:7001';
     const [jobCount, setJobCount] = useState(0);
     const [pendingCount, setPendingCount] = useState(0);
     const [acceptedCount, setAcceptedCount] = useState(0);
@@ -16,7 +17,7 @@ function SectionCandidateOverview() {
 
     const fetchJobCount = async () => {
         try {
-            const response = await axios.get('http://localhost:7001/api/jobview');
+            const response = await axios.get(`${API_URL}/api/jobview`);
             
             let count = 0;
             
@@ -41,7 +42,7 @@ function SectionCandidateOverview() {
     const fetchApplicationCounts = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:7001/api/applyview');
+            const response = await axios.get(`${API_URL}/api/applyview`);
             
             let applications = [];
             

@@ -15,12 +15,13 @@ function CanSavedJobsPage() {
     const [downloading, setDownloading] = useState(null);
     const [updatingStatus, setUpdatingStatus] = useState(null);
 
+     const API_URL = process.env.apiPort || 'http://localhost:7001';
     // Fetch saved jobs from API
     const fetchSavedJobs = async () => {
           loadScript("js/custom.js")
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:7001/api/applyview");
+            const response = await fetch(`${API_URL}/api/applyview`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -58,7 +59,7 @@ function CanSavedJobsPage() {
             setPopupLoading(true);
             setPopupError(null);
             
-            const response = await fetch(`http://localhost:7001/api/jobview/${jobId}`);
+            const response = await fetch(`${API_URL}api/jobview/${jobId}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -84,7 +85,7 @@ function CanSavedJobsPage() {
         try {
             setUpdatingStatus(applicationId);
             
-            const response = await fetch(`http://localhost:7001/api/applyupate/${applicationId}`, {
+            const response = await fetch(`${API_URL}/api/applyupate/${applicationId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -139,7 +140,7 @@ function CanSavedJobsPage() {
             const resumePath = job.resume.path;
             // Ensure the path is properly formatted for the URL
             const formattedPath = resumePath.replace(/\\/g, '/');
-            const downloadUrl = `http://localhost:7001/${formattedPath}`;
+            const downloadUrl = `${API_URL}/${formattedPath}`;
             
             console.log("Downloading resume from:", downloadUrl);
             

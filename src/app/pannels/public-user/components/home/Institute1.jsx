@@ -28,7 +28,7 @@ const Institute1 = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEmploymentType, setFilterEmploymentType] = useState("all");
-
+ const API_URL = process.env.apiPort || 'http://localhost:7001';
   useEffect(() => {
     fetchVacancies();
   }, []);
@@ -36,7 +36,7 @@ const Institute1 = () => {
   const fetchVacancies = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get("http://localhost:7001/api/jobviewauth", {
+      const response = await axios.get(`${API_URL}/api/jobviewauth`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -86,11 +86,11 @@ const Institute1 = () => {
       
       if (formData._id) {
         // Update existing job
-        url = `http://localhost:7001/api/jobupdate/${formData._id}`;
+        url = `${API_URL}/api/jobupdate/${formData._id}`;
         method = 'PUT';
       } else {
         // Create new job
-        url = 'http://localhost:7001/api/jobinsert';
+        url = `${API_URL}/api/jobinsert`;
         method = 'POST';
       }
 
@@ -167,7 +167,7 @@ const Institute1 = () => {
     if (window.confirm("Are you sure you want to delete this vacancy?")) {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.delete(`http://localhost:7001/api/jobdelete/${id}`, {
+        const response = await axios.delete(`${API_URL}/api/jobdelete/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
