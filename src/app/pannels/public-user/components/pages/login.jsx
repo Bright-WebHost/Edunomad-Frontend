@@ -77,7 +77,7 @@ z
             const top = (window.screen.height - height) / 2;
 
             const popup = window.open(
-                'https://api.edunomad.org/api/auth/google',
+                'https://api.edunomad.org/api/auth/google/callback',
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
