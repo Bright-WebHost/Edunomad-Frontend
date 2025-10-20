@@ -559,7 +559,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
-zz
+
   /* ------------------------------- Effects -------------------------------- */
   useEffect(() => {
     if (!isOpen) return;

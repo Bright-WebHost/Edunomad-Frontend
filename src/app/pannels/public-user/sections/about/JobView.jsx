@@ -9,7 +9,7 @@ export default function JobView() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-z
+
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {

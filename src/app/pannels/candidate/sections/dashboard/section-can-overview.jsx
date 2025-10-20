@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import CountUp from "react-countup";
 import axios from 'axios';
 
-function SectionCandidateOverview() {z
+function SectionCandidateOverview() {
     const [jobCount, setJobCount] = useState(0);
     const [pendingCount, setPendingCount] = useState(0);
     const [acceptedCount, setAcceptedCount] = useState(0);

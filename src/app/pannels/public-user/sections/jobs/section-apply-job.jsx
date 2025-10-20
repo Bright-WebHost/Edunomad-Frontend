@@ -9,7 +9,7 @@ function SectionApplyJob() {
   const params = useParams();
   const { id } = params;
   const [job, setJob] = useState({});
-zz
+
   // Clean up any existing modal backdrops on component mount
   useEffect(() => {
     // Remove Bootstrap modal backdrops

@@ -28,7 +28,7 @@ const Institute1 = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEmploymentType, setFilterEmploymentType] = useState("all");
-z
+
   useEffect(() => {
     fetchVacancies();
   }, []);

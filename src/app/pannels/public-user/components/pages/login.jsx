@@ -14,7 +14,7 @@ function LoginPage() {
     const [showCandidatePassword, setShowCandidatePassword] = useState(false);
     const [showEmployerPassword, setShowEmployerPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-z
+
     // Handle Google OAuth message from popup
     useEffect(() => {
         const handleMessage = (event) => {
