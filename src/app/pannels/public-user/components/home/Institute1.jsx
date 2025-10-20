@@ -28,7 +28,7 @@ const Institute1 = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEmploymentType, setFilterEmploymentType] = useState("all");
- const API_URL = process.env.apiPort || 'http://localhost:7001';
+z
   useEffect(() => {
     fetchVacancies();
   }, []);
@@ -36,7 +36,7 @@ const Institute1 = () => {
   const fetchVacancies = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://api.edunomad.org/api/jobviewauth`, {
+      const response = await axios.get("https://api.edunomad.org/api/jobviewauth", {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -90,7 +90,7 @@ const Institute1 = () => {
         method = 'PUT';
       } else {
         // Create new job
-        url = `https://api.edunomad.org/api/jobinsert`;
+        url = 'https://api.edunomad.org/api/jobinsert';
         method = 'POST';
       }
 

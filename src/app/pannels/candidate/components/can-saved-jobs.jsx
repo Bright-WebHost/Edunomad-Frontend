@@ -15,13 +15,12 @@ function CanSavedJobsPage() {
     const [downloading, setDownloading] = useState(null);
     const [updatingStatus, setUpdatingStatus] = useState(null);
 
-     const API_URL = process.env.apiPort || 'http://localhost:7001';
     // Fetch saved jobs from API
     const fetchSavedJobs = async () => {
           loadScript("js/custom.js")
         try {
             setLoading(true);
-            const response = await fetch(`https://api.edunomad.org/api/applyview`);
+            const response = await fetch("https://api.edunomad.org/api/applyview");
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

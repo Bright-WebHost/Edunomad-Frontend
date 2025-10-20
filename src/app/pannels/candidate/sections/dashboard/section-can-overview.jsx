@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import CountUp from "react-countup";
 import axios from 'axios';
 
-function SectionCandidateOverview() {
-     const API_URL = process.env.apiPort || 'http://localhost:7001';
+function SectionCandidateOverview() {z
     const [jobCount, setJobCount] = useState(0);
     const [pendingCount, setPendingCount] = useState(0);
     const [acceptedCount, setAcceptedCount] = useState(0);
@@ -17,7 +16,7 @@ function SectionCandidateOverview() {
 
     const fetchJobCount = async () => {
         try {
-            const response = await axios.get(`https://api.edunomad.org/api/jobview`);
+            const response = await axios.get('https://api.edunomad.org/api/jobview');
             
             let count = 0;
             
@@ -42,7 +41,7 @@ function SectionCandidateOverview() {
     const fetchApplicationCounts = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`https://api.edunomad.org/api/applyview`);
+            const response = await axios.get('https://api.edunomad.org/api/applyview');
             
             let applications = [];
             

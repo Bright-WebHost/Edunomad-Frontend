@@ -9,7 +9,7 @@ function SectionApplyJob() {
   const params = useParams();
   const { id } = params;
   const [job, setJob] = useState({});
- const API_URL = process.env.apiPort || 'http://localhost:7001';
+zz
   // Clean up any existing modal backdrops on component mount
   useEffect(() => {
     // Remove Bootstrap modal backdrops
@@ -201,7 +201,7 @@ function SectionApplyJob() {
       console.log('Submitting application with userId:', formData.userId);
       console.log('Job title being submitted:', formData.jobTitel);
       
-      const response = await fetch(`https://api.edunomad.org/api/apply`, {
+      const response = await fetch('https://api.edunomad.org/api/apply', {
         method: 'POST',
         body: submitData,
       });

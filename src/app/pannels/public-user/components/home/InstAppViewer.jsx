@@ -559,7 +559,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
- const API_URL = process.env.apiPort || 'http://localhost:7001';
+zz
   /* ------------------------------- Effects -------------------------------- */
   useEffect(() => {
     if (!isOpen) return;
@@ -571,7 +571,7 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
       setFetchError("");
       
       try {
-        const response = await fetch(`https://api.edunomad.org/api/applyview`, {
+        const response = await fetch("https://api.edunomad.org/api/applyview", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

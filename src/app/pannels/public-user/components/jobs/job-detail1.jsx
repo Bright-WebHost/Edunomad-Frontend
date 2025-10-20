@@ -18,7 +18,7 @@ function JobDetail1Page() {
     const sidebarConfig = {
         showJobInfo: true
     }
- const API_URL = process.env.apiPort || 'http://localhost:7001';
+
     useEffect(() => {
         loadScript("js/custom.js");
     }, []);
