@@ -105,7 +105,7 @@ function SignUpPopup() {
                         } else if (user.role === 'teacher' || user.role === 'tutor') {
                             navigate('/teacher-dashboard');
                         } else {
-                            navigate('/dashboard');
+                            navigate('/');
                         }
                     }
 
