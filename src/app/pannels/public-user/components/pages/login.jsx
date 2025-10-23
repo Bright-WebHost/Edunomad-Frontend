@@ -14,81 +14,12 @@ function LoginPage() {
     const [showCandidatePassword, setShowCandidatePassword] = useState(false);
     const [showEmployerPassword, setShowEmployerPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-    // Strict token validation function
-    const validateToken = async (token) => {
-        try {
-            const response = await fetch('https://api.edunomad.org/api/auth/verify-token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                return { valid: true, user: data.user };
-            }
-            return { valid: false };
-        } catch (error) {
-            console.error('Token validation error:', error);
-            return { valid: false };
-        }
-    };
-
-    // Check authentication status when component mounts
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            setIsCheckingAuth(true);
-            
-            // Get token and user from localStorage
-            const token = localStorage.getItem('token');
-            const userStr = localStorage.getItem('user');
-            
-            if (token && userStr) {
-                try {
-                    const user = JSON.parse(userStr);
-                    
-                    // Validate token with backend
-                    const validation = await validateToken(token);
-                    
-                    if (validation.valid) {
-                        // Token is valid, redirect to appropriate dashboard
-                        if (user.role === 'school' || user.role === 'parent') {
-                            navigate(canRoute(candidate.DASHBOARD), { replace: true });
-                        } else if (user.role === 'teacher' || user.role === 'tutor') {
-                            navigate(empRoute(employer.DASHBOARD), { replace: true });
-                        } else {
-                            navigate(publicUser.HOME1, { replace: true });
-                        }
-                        return;
-                    } else {
-                        // Token is invalid, clear localStorage
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                    }
-                } catch (error) {
-                    console.error('Auth check error:', error);
-                    // Clear invalid data
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                }
-            }
-            
-            setIsCheckingAuth(false);
-        };
-
-        checkAuthStatus();
-    }, [navigate]);
 
     // Handle Google OAuth message from popup
     useEffect(() => {
         const handleMessage = (event) => {
-            // For security, verify the origin
-            // Uncomment and configure this in production
-            // if (event.origin !== 'https://api.edunomad.org') return;
+            // For security, you might want to check the origin
+            // if (event.origin !== 'http://localhost:7001') return;
 
             if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                 const { token, user, requiresRoleCompletion } = event.data;
@@ -104,8 +35,7 @@ function LoginPage() {
                             userId: user.id,
                             email: user.email,
                             username: user.username 
-                        },
-                        replace: true
+                        } 
                     });
                 } else {
                     // Regular login success
@@ -113,11 +43,11 @@ function LoginPage() {
                     
                     // Redirect based on user role
                     if (user.role === 'school' || user.role === 'parent') {
-                        navigate(canRoute(candidate.DASHBOARD), { replace: true });
+                        navigate(canRoute(candidate.DASHBOARD));
                     } else if (user.role === 'teacher' || user.role === 'tutor') {
-                        navigate(empRoute(employer.DASHBOARD), { replace: true });
+                        navigate(empRoute(employer.DASHBOARD));
                     } else {
-                        navigate(publicUser.HOME1, { replace: true });
+                        navigate(publicUser.HOME1);
                     }
                 }
             }
@@ -136,13 +66,6 @@ function LoginPage() {
     }, [navigate]);
 
     const handleGoogleLogin = async (userType = 'candidate') => {
-        // Check if already logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-            setError('You are already logged in. Please logout first.');
-            return;
-        }
-
         setIsGoogleLoading(true);
         setError('');
 
@@ -176,14 +99,6 @@ function LoginPage() {
 
     const handleCandidateLogin = async (event) => {
         event.preventDefault();
-        
-        // Check if already logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-            setError('You are already logged in. Please logout first.');
-            return;
-        }
-
         setIsLoading({ ...isLoading, candidate: true });
         setError('');
         
@@ -206,17 +121,14 @@ function LoginPage() {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
-                // Show success message
-                alert('Login successful!');
-                
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute(candidate.DASHBOARD), { replace: true });
+                    navigate(canRoute(candidate.DASHBOARD));
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute(employer.DASHBOARD), { replace: true });
+                    navigate(empRoute(employer.DASHBOARD));
                 } else {
                     // Default redirect for other roles
-                    navigate(publicUser.HOME1, { replace: true });
+                    navigate(publicUser.HOME1);
                 }
             } else {
                 setError(data.message || 'Login failed');
@@ -231,14 +143,6 @@ function LoginPage() {
 
     const handleEmployerLogin = async (event) => {
         event.preventDefault();
-        
-        // Check if already logged in
-        const token = localStorage.getItem('token');
-        if (token) {
-            setError('You are already logged in. Please logout first.');
-            return;
-        }
-
         setIsLoading({ ...isLoading, employer: true });
         setError('');
         
@@ -247,7 +151,7 @@ function LoginPage() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                },
+                    },
                 body: JSON.stringify({
                     email: employerEmail,
                     password: employerPassword
@@ -261,17 +165,14 @@ function LoginPage() {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
-                // Show success message
-                alert('Login successful!');
-                
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute(candidate.DASHBOARD), { replace: true });
+                    navigate(canRoute(candidate.DASHBOARD));
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute(employer.DASHBOARD), { replace: true });
+                    navigate(empRoute(employer.DASHBOARD));
                 } else {
                     // Default redirect for other roles
-                    navigate(publicUser.HOME1, { replace: true });
+                    navigate(publicUser.HOME1);
                 }
             } else {
                 setError(data.message || 'Login failed');
@@ -282,26 +183,6 @@ function LoginPage() {
         } finally {
             setIsLoading({ ...isLoading, employer: false });
         }
-    }
-
-    // Show loading spinner while checking authentication
-    if (isCheckingAuth) {
-        return (
-            <div className="section-full site-bg-white">
-                <div className="container-fluid">
-                    <div className="row">
-                        <div className="col-12 d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-                            <div className="text-center">
-                                <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
-                                    <span className="visually-hidden">Loading...</span>
-                                </div>
-                                <p className="mt-3">Checking authentication status...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
     }
 
     return (
@@ -320,7 +201,7 @@ function LoginPage() {
                             <div className="twm-log-reg-form-wrap">
                                 <div className="twm-log-reg-logo-head">
                                     <NavLink to={publicUser.HOME1}>
-                                        <img src="assets/images/Eduno logo.png" className="logo-img" alt="EduNomad Logo"/>
+                                         <img src="assets/images/Eduno logo.png" className="logo-img"/>
                                         <h3 className='nav-text-ed'>EduNomad Connect</h3>
                                     </NavLink>
                                 </div>
@@ -362,23 +243,14 @@ function LoginPage() {
                                         </button>
                                     </div>
 
-                                    {/* Uncomment below section if you want to enable email/password login */}
                                     {/* <div className="position-relative text-center mb-4">
                                         <hr />
                                         <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
                                             Or continue with email
                                         </span>
-                                    </div>
+                                    </div> */}
 
-                                    <div className="twm-tabs-style-2">
-                                        <ul className="nav nav-tabs" id="myTab2" role="tablist">
-                                            <li className="nav-item">
-                                                <button className="nav-link active" id="twm-login-candidate-tab" data-bs-toggle="tab" data-bs-target="#twm-login-candidate" type="button">Candidate</button>
-                                            </li>
-                                            <li className="nav-item">
-                                                <button className="nav-link" id="twm-login-Employer-tab" data-bs-toggle="tab" data-bs-target="#twm-login-Employer" type="button">Employer</button>
-                                            </li>
-                                        </ul>
+                                    {/* <div className="twm-tabs-style-2">
                                         <div className="tab-content" id="myTab2Content">
                                             <form onSubmit={handleCandidateLogin} className="tab-pane fade show active" id="twm-login-candidate">
                                                 <div className="row">
@@ -426,9 +298,7 @@ function LoginPage() {
                                                         <div className="twm-forgot-wrap">
                                                             <div className="form-group mb-3">
                                                                 <div className="form-check">
-                                                                    <label className="form-check-label rem-forgot" htmlFor="Password4">
-                                                                        <a href="#" className="site-text-primary">Forgot Password</a>
-                                                                    </label>
+                                                                    <label className="form-check-label rem-forgot" htmlFor="Password4"><a href="#" className="site-text-primary">Forgot Password</a></label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -493,9 +363,7 @@ function LoginPage() {
                                                             <div className="form-group mb-3">
                                                                 <div className="form-check">
                                                                     <input type="checkbox" className="form-check-input" id="Password5" />
-                                                                    <label className="form-check-label rem-forgot" htmlFor="Password5">
-                                                                        Remember me <a href="#" className="site-text-primary">Forgot Password</a>
-                                                                    </label>
+                                                                    <label className="form-check-label rem-forgot" htmlFor="Password5">Remember me <a href="#" className="site-text-primary">Forgot Password</a></label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -534,7 +402,6 @@ function LoginPage() {
                     transform: translateY(-50%);
                     cursor: pointer;
                     color: #777;
-                    z-index: 10;
                 }
                 
                 .password-toggle-icon:hover {
@@ -549,11 +416,6 @@ function LoginPage() {
                 .btn-outline-danger:hover {
                     background-color: #db4437;
                     color: white;
-                }
-
-                .btn-outline-danger:disabled {
-                    opacity: 0.6;
-                    cursor: not-allowed;
                 }
                 `}
             </style>
