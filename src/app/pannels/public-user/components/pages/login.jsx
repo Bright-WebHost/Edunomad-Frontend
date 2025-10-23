@@ -43,9 +43,9 @@ function LoginPage() {
                     
                     // Redirect based on user role
                     if (user.role === 'school' || user.role === 'parent') {
-                        navigate(canRoute('/'));
+                        navigate(canRoute(candidate.DASHBOARD));
                     } else if (user.role === 'teacher' || user.role === 'tutor') {
-                        navigate(empRoute('/'));
+                        navigate(empRoute(employer.DASHBOARD));
                     } else {
                         navigate(publicUser.HOME1);
                     }
@@ -65,7 +65,7 @@ function LoginPage() {
         };
     }, [navigate]);
 
-    const handleGoogleLogin = async (userType = '/') => {
+    const handleGoogleLogin = async (userType = 'candidate') => {
         setIsGoogleLoading(true);
         setError('');
 
@@ -123,9 +123,9 @@ function LoginPage() {
                 
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute('/'));
+                    navigate(canRoute(candidate.DASHBOARD));
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute('/'));
+                    navigate(empRoute(employer.DASHBOARD));
                 } else {
                     // Default redirect for other roles
                     navigate(publicUser.HOME1);
@@ -167,9 +167,9 @@ function LoginPage() {
                 
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute('/'));
+                    navigate(canRoute(candidate.DASHBOARD));
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute('/'));
+                    navigate(empRoute(employer.DASHBOARD));
                 } else {
                     // Default redirect for other roles
                     navigate(publicUser.HOME1);
@@ -222,7 +222,7 @@ function LoginPage() {
                                         <button 
                                             type="button"
                                             className="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center"
-                                            onClick={() => handleGoogleLogin('/')}
+                                            onClick={() => handleGoogleLogin('candidate')}
                                             disabled={isGoogleLoading}
                                         >
                                             {isGoogleLoading ? (
