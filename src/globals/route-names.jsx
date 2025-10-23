@@ -3,7 +3,7 @@ import InstitutePortal1 from "../app/pannels/public-user/components/home/Institu
 
 export const base = {
     PUBLIC_PRE: "",
-    CANDIDATE_PRE: "/",
+    CANDIDATE_PRE: "",
     EMPLOYER_PRE: ""
 }
 
