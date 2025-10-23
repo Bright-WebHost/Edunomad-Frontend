@@ -32,7 +32,7 @@ function OAuthRedirect() {
                 // If no opener, handle directly
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(userData));
-                navigate('/dashboard');
+                navigate('/');
             }
         } else {
             // Handle error

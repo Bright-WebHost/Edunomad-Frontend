@@ -6,6 +6,7 @@ import CountUp from "react-countup";
 import { useEffect } from "react";
 import SectionJobCategories from "../../sections/about/section-job-categories";
 import JobView from "../../sections/about/JobView";
+import JobViewFront from "../../sections/about/JobViewFront";
 
 function Home3Page() {
 
@@ -310,7 +311,8 @@ function Home3Page() {
             </div> */}
             {/* JOB POST END */}
             {/* CANDIDATES START */}
-         <JobView/>
+   <JobViewFront/>
+      
            <SectionJobCategories />
         </>
     )

@@ -725,8 +725,8 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
         {/* --------------------------- Header -------------------------- */}
         <header className="modal-header">
           <div>
-            <h2 className="modal-title">Applications – {jobTitle}</h2>
-            <h2 className="modal-title">Applications – {jobId}</h2>
+            <h2 className="modal-title"> {jobTitle}</h2>
+            {/* <h2 className="modal-title">Applications – {jobId}</h2> */}
             <p className="modal-subtitle">
               {apps.length} applicant{apps.length !== 1 ? "s" : ""} so far
             </p>
@@ -874,14 +874,14 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
             </section>
 
             {/* Education */}
-            {selectedApp.education && selectedApp.education !== "undefined" && (
+            {/* {selectedApp.education && selectedApp.education !== "undefined" && (
               <section className="modal-section">
                 <h3 className="section-title">
                   <GraduationCap className="icon" /> Education
                 </h3>
                 <p>{selectedApp.education}</p>
               </section>
-            )}
+            )} */}
 
             {/* Experience */}
             {selectedApp.experience && (
@@ -967,7 +967,8 @@ const InstAppViewer = ({ jobTitle, jobId, isOpen, onClose }) => {
                 <IconButton
                   icon={Mail}
                   className="email-button flex-1"
-                  onClick={() => window.open(`mailto:${contactApp.email}`, '_blank')}
+                  onClick={() =>   window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${contactApp.email}`,'_blank'
+      )}
                 >
                   Send Email
                 </IconButton>

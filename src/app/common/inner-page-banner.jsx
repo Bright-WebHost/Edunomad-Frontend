@@ -18,7 +18,7 @@ function InnerPageBanner({_data}) {
                         {/* BREADCRUMB ROW */}
                         <div>
                             <ul className="wt-breadcrumb breadcrumb-style-2">
-                                <li><NavLink to="/index3">Home</NavLink></li>
+                                <li><NavLink to="/">Home</NavLink></li>
                                 <li>{_data.crumb}</li>
                             </ul>
                         </div>

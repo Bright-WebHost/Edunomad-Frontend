@@ -62,14 +62,14 @@ function SignUpPopup() {
             const top = (window.screen.height - height) / 2;
 
             const popup = window.open(
-                'https://api.edunomad.org/api/auth/google',
+                'http://localhost:7001/api/auth/google',
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
 
             // Listen for message from popup
             const messageHandler = (event) => {
-                if (event.origin !== 'https://api.edunomad.org') return;
+                if (event.origin !== 'http://localhost:7001') return;
 
                 if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                     const { token, user, requiresRoleCompletion } = event.data;
@@ -149,7 +149,7 @@ function SignUpPopup() {
         }
 
         try {
-            const response = await fetch('https://api.edunomad.org/api/auth/register', {
+            const response = await fetch('http://localhost:7001/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -170,19 +170,20 @@ function SignUpPopup() {
 
             const data = await response.json();
 
+            // Show success message
             alert('Sign up successful! Please login to continue.');
             
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            // DO NOT store token or user data here
+            // User must login separately after registration
             
+            // Close the modal
             const modal = document.getElementById('sign_up_popup');
             const modalInstance = bootstrap.Modal.getInstance(modal);
             if (modalInstance) {
                 modalInstance.hide();
             }
             
-            navigate('/login');
-            
+            // Clear form data
             setFormData({
                 username: '',
                 password: '',
@@ -191,6 +192,10 @@ function SignUpPopup() {
                 agree: false,
                 role: 'school'
             });
+
+            // Navigate to login page
+            navigate('/login');
+            
         } catch (error) {
             console.error('Sign up error:', error);
             if (error.message.includes('Failed to fetch')) {
@@ -370,15 +375,20 @@ function SignUpPopup() {
                                                             I agree to the <a href="#">Terms and conditions</a>
                                                         </label>
                                                         <p className="mt-2">Already registered?
-                                                             <a href='login'  
-                                                                className="twm-backto-login" 
-                                                                data-bs-target="#sign_up_popup2" 
-                                                                // data-bs-toggle="modal" 
-                                                                // data-bs-dismiss="modal"
-                                                                 onClick={() => navigate("/login")}
+                                                             <button 
+                                                                type="button"
+                                                                className="twm-backto-login btn btn-link p-0 ms-1" 
+                                                                onClick={() => {
+                                                                    const modal = document.getElementById('sign_up_popup');
+                                                                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                                                                    if (modalInstance) {
+                                                                        modalInstance.hide();
+                                                                    }
+                                                                    navigate('/login');
+                                                                }}
                                                             >
                                                                 Log in here
-                                                            </a>
+                                                            </button>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -493,10 +503,16 @@ function SignUpPopup() {
                                                         </label>
                                                         <p className="mt-2">Already registered?
                                                             <button 
-                                                                className="twm-backto-login" 
-                                                                data-bs-target="#sign_up_popup2" 
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-dismiss="modal"
+                                                                type="button"
+                                                                className="twm-backto-login btn btn-link p-0 ms-1" 
+                                                                onClick={() => {
+                                                                    const modal = document.getElementById('sign_up_popup');
+                                                                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                                                                    if (modalInstance) {
+                                                                        modalInstance.hide();
+                                                                    }
+                                                                    navigate('/login');
+                                                                }}
                                                             >
                                                                 Log in here
                                                             </button>

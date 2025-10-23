@@ -4,7 +4,7 @@ import { publicUser } from "../../../../../globals/route-names";
 import JobZImage from "../../../../common/jobz-img";
 import axios from 'axios';
 
-export default function JobView() {
+export default function JobViewFront() {
   const [showComponent, setShowComponent] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +65,9 @@ export default function JobView() {
           return dateB - dateA; // Descending order (newest first)
         });
         
-        setJobs(sortedJobs);
+        // Take only first 4 jobs
+        const limitedJobs = sortedJobs.slice(0, 4);
+        setJobs(limitedJobs);
       }
     } catch (error) {
       console.error('Error fetching jobs:', error);
@@ -170,9 +172,9 @@ export default function JobView() {
                 <h2 className="wt-title">Find Your Career You Deserve it</h2>
               </div>
             </div>
-            {/* <div className="col-xl-6 col-lg-6 col-md-12 wt-separator-two-part-right text-right">
+            <div className="col-xl-6 col-lg-6 col-md-12 wt-separator-two-part-right text-right">
               <NavLink to='apply-job' className="site-button">Browse All Jobs</NavLink>
-            </div> */}
+            </div>
           </div>
         </div>
         <div className="section-content">

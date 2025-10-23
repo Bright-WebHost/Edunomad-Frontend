@@ -15,11 +15,11 @@ function CandidateLayout() {
         <>
             <div className="page-wraper">
 
-                <Header1 _config={getHeaderConfig(currentpath)} />
+                {/* <Header1 _config={getHeaderConfig(currentpath)} /> */}
 
                 <div className="page-content">
 
-                    <InnerPageBanner _data={setBanner(currentpath)} />
+                   <InnerPageBanner _data={setBanner(currentpath)} />
 
                     <div className="section-full p-t120  p-b90 site-bg-white">
                         <div className="container">

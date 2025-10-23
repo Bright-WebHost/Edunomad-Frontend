@@ -250,7 +250,7 @@ function AdminLoginPage() {
                                 
                                 <div style={styles.imageContainer}>
                                     <JobzImage 
-                                        src="images/admin-login.png" 
+                                        src="images/client-logo2/Eduno logo.png" 
                                         alt="Admin Login" 
                                         style={styles.adminImage}
                                     />

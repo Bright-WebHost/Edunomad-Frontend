@@ -76,7 +76,7 @@ function JobDetail1Page() {
                                                 </div> */}
                                                 <div className="twm-mid-content">
                                                     {/* <div className="twm-media">
-                                                        <JobZImage src="images/client-logo2/instLogo.png" alt="#" />
+                                                        <JobZImage src="assets/images/Eduno logo.png" alt="#" />
                                                     </div> */}
                                                     <h4 className="twm-s-title">{job.data.titel} <span className="twm-job-post-duration"></span></h4>
                                                     <p className="twm-job-address"><i className="feather-map-pin" /> {job.data.location}</p>
