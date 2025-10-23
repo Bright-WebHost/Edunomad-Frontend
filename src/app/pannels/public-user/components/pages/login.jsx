@@ -65,7 +65,7 @@ function LoginPage() {
         };
     }, [navigate]);
 
-    const handleGoogleLogin = async (userType = 'candidate') => {
+    const handleGoogleLogin = async (userType = '/') => {
         setIsGoogleLoading(true);
         setError('');
 
@@ -222,7 +222,7 @@ function LoginPage() {
                                         <button 
                                             type="button"
                                             className="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center"
-                                            onClick={() => handleGoogleLogin('candidate')}
+                                            onClick={() => handleGoogleLogin('/')}
                                             disabled={isGoogleLoading}
                                         >
                                             {isGoogleLoading ? (
