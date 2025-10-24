@@ -105,7 +105,7 @@ function SignUpPopup() {
                         } else if (user.role === 'teacher' || user.role === 'tutor') {
                             navigate('/teacher-dashboard');
                         } else {
-                            navigate('/');
+                            navigate('/dashboard');
                         }
                     }
 
@@ -170,20 +170,19 @@ function SignUpPopup() {
 
             const data = await response.json();
 
-            // Show success message
             alert('Sign up successful! Please login to continue.');
             
-            // DO NOT store token or user data here
-            // User must login separately after registration
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
             
-            // Close the modal
             const modal = document.getElementById('sign_up_popup');
             const modalInstance = bootstrap.Modal.getInstance(modal);
             if (modalInstance) {
                 modalInstance.hide();
             }
             
-            // Clear form data
+            navigate('/login');
+            
             setFormData({
                 username: '',
                 password: '',
@@ -192,10 +191,6 @@ function SignUpPopup() {
                 agree: false,
                 role: 'school'
             });
-
-            // Navigate to login page
-            navigate('/login');
-            
         } catch (error) {
             console.error('Sign up error:', error);
             if (error.message.includes('Failed to fetch')) {
@@ -375,20 +370,15 @@ function SignUpPopup() {
                                                             I agree to the <a href="#">Terms and conditions</a>
                                                         </label>
                                                         <p className="mt-2">Already registered?
-                                                             <button 
-                                                                type="button"
-                                                                className="twm-backto-login btn btn-link p-0 ms-1" 
-                                                                onClick={() => {
-                                                                    const modal = document.getElementById('sign_up_popup');
-                                                                    const modalInstance = bootstrap.Modal.getInstance(modal);
-                                                                    if (modalInstance) {
-                                                                        modalInstance.hide();
-                                                                    }
-                                                                    navigate('/login');
-                                                                }}
+                                                             <a href='login'  
+                                                                className="twm-backto-login" 
+                                                                data-bs-target="#sign_up_popup2" 
+                                                                // data-bs-toggle="modal" 
+                                                                // data-bs-dismiss="modal"
+                                                                 onClick={() => navigate("/login")}
                                                             >
                                                                 Log in here
-                                                            </button>
+                                                            </a>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -503,16 +493,10 @@ function SignUpPopup() {
                                                         </label>
                                                         <p className="mt-2">Already registered?
                                                             <button 
-                                                                type="button"
-                                                                className="twm-backto-login btn btn-link p-0 ms-1" 
-                                                                onClick={() => {
-                                                                    const modal = document.getElementById('sign_up_popup');
-                                                                    const modalInstance = bootstrap.Modal.getInstance(modal);
-                                                                    if (modalInstance) {
-                                                                        modalInstance.hide();
-                                                                    }
-                                                                    navigate('/login');
-                                                                }}
+                                                                className="twm-backto-login" 
+                                                                data-bs-target="#sign_up_popup2" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-dismiss="modal"
                                                             >
                                                                 Log in here
                                                             </button>

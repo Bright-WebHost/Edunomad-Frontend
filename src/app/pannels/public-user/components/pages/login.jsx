@@ -3,6 +3,7 @@ import JobZImage from "../../../../common/jobz-img";
 import { canRoute, candidate, empRoute, employer, publicUser } from "../../../../../globals/route-names";
 import { useState, useEffect } from "react";
 
+
 function LoginPage() {
     const navigate = useNavigate();
     const [candidateEmail, setCandidateEmail] = useState('');
@@ -14,6 +15,10 @@ function LoginPage() {
     const [showCandidatePassword, setShowCandidatePassword] = useState(false);
     const [showEmployerPassword, setShowEmployerPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+    const [showRolePopup, setShowRolePopup] = useState(false);
+    const [selectedRole, setSelectedRole] = useState('parent'); // Default to 'parent'
+    const [roleError, setRoleError] = useState('');
+
 
     // Handle Google OAuth message from popup
     useEffect(() => {
@@ -21,12 +26,14 @@ function LoginPage() {
             // For security, you might want to check the origin
             // if (event.origin !== 'http://localhost:7001') return;
 
+
             if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                 const { token, user, requiresRoleCompletion } = event.data;
                 
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(user));
                 setIsGoogleLoading(false);
+
 
                 if (requiresRoleCompletion) {
                     // Redirect to role completion page
@@ -52,32 +59,52 @@ function LoginPage() {
                 }
             }
 
+
             if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
                 setError(event.data.message);
                 setIsGoogleLoading(false);
             }
         };
 
+
         window.addEventListener('message', handleMessage);
+
 
         return () => {
             window.removeEventListener('message', handleMessage);
         };
     }, [navigate]);
 
-    const handleGoogleLogin = async (userType = 'candidate') => {
+
+    const handleGoogleLogin = () => {
+        setShowRolePopup(true);
+        setRoleError('');
+        setSelectedRole('parent'); // Reset to default 'parent' when popup opens
+    };
+
+
+    const handleRoleSubmit = async () => {
+        if (!selectedRole) {
+            setRoleError('Please select a role');
+            return;
+        }
+
         setIsGoogleLoading(true);
         setError('');
+        setShowRolePopup(false);
 
         try {
-            // Open Google OAuth in new window
+            // Open Google OAuth in new window with role parameter
             const width = 600;
             const height = 600;
             const left = (window.screen.width - width) / 2;
             const top = (window.screen.height - height) / 2;
 
+            // Store selected role in sessionStorage to access after OAuth
+            sessionStorage.setItem('selectedRole', selectedRole);
+
             const popup = window.open(
-                'https://api.edunomad.org/api/auth/google',
+                `https://api.edunomad.org/api/auth/google?role=${selectedRole}`,
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
@@ -87,6 +114,7 @@ function LoginPage() {
                 if (popup && popup.closed) {
                     clearInterval(checkPopup);
                     setIsGoogleLoading(false);
+                    sessionStorage.removeItem('selectedRole');
                 }
             }, 500);
 
@@ -94,8 +122,17 @@ function LoginPage() {
             console.error('Google login error:', error);
             setError('Google login failed. Please try again.');
             setIsGoogleLoading(false);
+            sessionStorage.removeItem('selectedRole');
         }
     };
+
+
+    const handleCancelRole = () => {
+        setShowRolePopup(false);
+        setSelectedRole('parent'); // Reset to default 'parent' when cancelled
+        setRoleError('');
+    };
+
 
     const handleCandidateLogin = async (event) => {
         event.preventDefault();
@@ -113,6 +150,7 @@ function LoginPage() {
                     password: candidatePassword
                 })
             });
+
 
             const data = await response.json();
             
@@ -141,6 +179,7 @@ function LoginPage() {
         }
     }
 
+
     const handleEmployerLogin = async (event) => {
         event.preventDefault();
         setIsLoading({ ...isLoading, employer: true });
@@ -151,12 +190,13 @@ function LoginPage() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    },
+                },
                 body: JSON.stringify({
                     email: employerEmail,
                     password: employerPassword
                 })
             });
+
 
             const data = await response.json();
             
@@ -184,6 +224,7 @@ function LoginPage() {
             setIsLoading({ ...isLoading, employer: false });
         }
     }
+
 
     return (
         <>
@@ -222,7 +263,7 @@ function LoginPage() {
                                         <button 
                                             type="button"
                                             className="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center"
-                                            onClick={() => handleGoogleLogin('candidate')}
+                                            onClick={handleGoogleLogin}
                                             disabled={isGoogleLoading}
                                         >
                                             {isGoogleLoading ? (
@@ -242,153 +283,74 @@ function LoginPage() {
                                             )}
                                         </button>
                                     </div>
-
-                                    {/* <div className="position-relative text-center mb-4">
-                                        <hr />
-                                        <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
-                                            Or continue with email
-                                        </span>
-                                    </div> */}
-
-                                    {/* <div className="twm-tabs-style-2">
-                                        <div className="tab-content" id="myTab2Content">
-                                            <form onSubmit={handleCandidateLogin} className="tab-pane fade show active" id="twm-login-candidate">
-                                                <div className="row">
-                                                    <div className="col-lg-12">
-                                                        <div className="form-group mb-3">
-                                                            <input 
-                                                                name="email"
-                                                                type="email"
-                                                                required
-                                                                className="form-control"
-                                                                placeholder="Email*"
-                                                                value={candidateEmail}
-                                                                onChange={(event) => {
-                                                                    setCandidateEmail(event.target.value);
-                                                                }} 
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12">
-                                                        <div className="form-group mb-3 password-input-container">
-                                                            <input
-                                                                name="password"
-                                                                type={showCandidatePassword ? "text" : "password"}
-                                                                className="form-control"
-                                                                required
-                                                                placeholder="Password*"
-                                                                value={candidatePassword}
-                                                                onChange={(event) => {
-                                                                    setCandidatePassword(event.target.value);
-                                                                }} 
-                                                            />
-                                                            <span 
-                                                                className="password-toggle-icon"
-                                                                onClick={() => setShowCandidatePassword(!showCandidatePassword)}
-                                                            >
-                                                                {showCandidatePassword ? (
-                                                                    <i className="fas fa-eye-slash"></i>
-                                                                ) : (
-                                                                    <i className="fas fa-eye"></i>
-                                                                )}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12">
-                                                        <div className="twm-forgot-wrap">
-                                                            <div className="form-group mb-3">
-                                                                <div className="form-check">
-                                                                    <label className="form-check-label rem-forgot" htmlFor="Password4"><a href="#" className="site-text-primary">Forgot Password</a></label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="form-group">
-                                                            <button 
-                                                                type="submit" 
-                                                                className="site-button"
-                                                                disabled={isLoading.candidate}
-                                                            >
-                                                                {isLoading.candidate ? 'Logging in...' : 'Log in'}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                            <form onSubmit={handleEmployerLogin} className="tab-pane fade" id="twm-login-Employer">
-                                                <div className="row">
-                                                    <div className="col-lg-12">
-                                                        <div className="form-group mb-3">
-                                                            <input
-                                                                name="email"
-                                                                type="email"
-                                                                required
-                                                                className="form-control"
-                                                                placeholder="Email*"
-                                                                value={employerEmail}
-                                                                onChange={(event) => {
-                                                                    setEmployerEmail(event.target.value);
-                                                                }} 
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12">
-                                                        <div className="form-group mb-3 password-input-container">
-                                                            <input
-                                                                name="password"
-                                                                type={showEmployerPassword ? "text" : "password"}
-                                                                className="form-control"
-                                                                required
-                                                                placeholder="Password*"
-                                                                value={employerPassword}
-                                                                onChange={(event) => {
-                                                                    setEmployerPassword(event.target.value);
-                                                                }} 
-                                                            />
-                                                            <span 
-                                                                className="password-toggle-icon"
-                                                                onClick={() => setShowEmployerPassword(!showEmployerPassword)}
-                                                            >
-                                                                {showEmployerPassword ? (
-                                                                    <i className="fas fa-eye-slash"></i>
-                                                                ) : (
-                                                                    <i className="fas fa-eye"></i>
-                                                                )}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-12">
-                                                        <div className="twm-forgot-wrap">
-                                                            <div className="form-group mb-3">
-                                                                <div className="form-check">
-                                                                    <input type="checkbox" className="form-check-input" id="Password5" />
-                                                                    <label className="form-check-label rem-forgot" htmlFor="Password5">Remember me <a href="#" className="site-text-primary">Forgot Password</a></label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-12">
-                                                        <div className="form-group">
-                                                            <button 
-                                                                type="submit" 
-                                                                className="site-button"
-                                                                disabled={isLoading.employer}
-                                                            >
-                                                                {isLoading.employer ? 'Logging in...' : 'Log in'}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Role Selection Popup */}
+            {showRolePopup && (
+                <div className="role-popup-overlay">
+                    <div className="role-popup-container">
+                        <div className="role-popup-header">
+                            <h4>Select Your Role</h4>
+                            <button 
+                                className="role-popup-close"
+                                onClick={handleCancelRole}
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div className="role-popup-body">
+                            <p className="role-popup-description">
+                                Please select your role to continue with Google login
+                            </p>
+                            
+                            <div className="form-group">
+                                <label htmlFor="roleSelect" className="form-label">
+                                    Role <span className="text-danger">*</span>
+                                </label>
+                                <select 
+                                    id="roleSelect"
+                                    className="form-control form-select"
+                                    value={selectedRole}
+                                    onChange={(e) => {
+                                        setSelectedRole(e.target.value);
+                                        setRoleError('');
+                                    }}
+                                >
+                                    <option value="parent">Parent</option>
+                                    <option value="school">School</option>
+                                    <option value="teacher">Teacher</option>
+                                    <option value="tutor">Tutor</option>
+                                </select>
+                                {roleError && (
+                                    <small className="text-danger mt-1 d-block">
+                                        {roleError}
+                                    </small>
+                                )}
+                            </div>
+                        </div>
+                        <div className="role-popup-footer">
+                            <button 
+                                className="btn btn-secondary me-2"
+                                onClick={handleCancelRole}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                className="btn btn-primary"
+                                onClick={handleRoleSubmit}
+                            >
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>
                 {`
                 .password-input-container {
@@ -417,10 +379,150 @@ function LoginPage() {
                     background-color: #db4437;
                     color: white;
                 }
+
+                /* Role Popup Styles */
+                .role-popup-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 9999;
+                }
+
+                .role-popup-container {
+                    background: white;
+                    border-radius: 8px;
+                    width: 90%;
+                    max-width: 400px;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                    animation: slideIn 0.3s ease-out;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateY(-50px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                }
+
+                .role-popup-header {
+                    padding: 20px;
+                    border-bottom: 1px solid #e0e0e0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .role-popup-header h4 {
+                    margin: 0;
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: #333;
+                }
+
+                .role-popup-close {
+                    background: none;
+                    border: none;
+                    font-size: 28px;
+                    color: #999;
+                    cursor: pointer;
+                    padding: 0;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    transition: all 0.2s;
+                }
+
+                .role-popup-close:hover {
+                    background-color: #f5f5f5;
+                    color: #333;
+                }
+
+                .role-popup-body {
+                    padding: 20px;
+                }
+
+                .role-popup-description {
+                    color: #666;
+                    margin-bottom: 20px;
+                    font-size: 14px;
+                }
+
+                .role-popup-body .form-label {
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 8px;
+                }
+
+                .role-popup-body .form-select {
+                    padding: 10px 12px;
+                    font-size: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: border-color 0.2s;
+                }
+
+                .role-popup-body .form-select:focus {
+                    border-color: #db4437;
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(219, 68, 55, 0.1);
+                }
+
+                .role-popup-footer {
+                    padding: 15px 20px;
+                    border-top: 1px solid #e0e0e0;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                }
+
+                .role-popup-footer .btn {
+                    padding: 8px 20px;
+                    font-size: 14px;
+                    border-radius: 5px;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                }
+
+                .role-popup-footer .btn-secondary {
+                    background-color: #6c757d;
+                    border-color: #6c757d;
+                    color: white;
+                }
+
+                .role-popup-footer .btn-secondary:hover {
+                    background-color: #5a6268;
+                    border-color: #545b62;
+                }
+
+                .role-popup-footer .btn-primary {
+                    background-color: #db4437;
+                    border-color: #db4437;
+                    color: white;
+                }
+
+                .role-popup-footer .btn-primary:hover {
+                    background-color: #c23321;
+                    border-color: #b52e1f;
+                }
                 `}
             </style>
         </>
     )
 }
+
 
 export default LoginPage;
