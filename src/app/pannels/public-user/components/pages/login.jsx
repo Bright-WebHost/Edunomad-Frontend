@@ -43,9 +43,9 @@ function LoginPage() {
                     
                     // Redirect based on user role
                     if (user.role === 'school' || user.role === 'parent') {
-                        navigate(canRoute(candidate.DASHBOARD));
+                        navigate('');
                     } else if (user.role === 'teacher' || user.role === 'tutor') {
-                        navigate(empRoute(employer.DASHBOARD));
+                        navigate('');
                     } else {
                         navigate(publicUser.HOME1);
                     }
@@ -123,9 +123,9 @@ function LoginPage() {
                 
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute(candidate.DASHBOARD));
+                    navigate('');
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute(employer.DASHBOARD));
+                    navigate('');
                 } else {
                     // Default redirect for other roles
                     navigate(publicUser.HOME1);
@@ -167,9 +167,9 @@ function LoginPage() {
                 
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute(candidate.DASHBOARD));
+                    navigate('');
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute(employer.DASHBOARD));
+                    navigate('');
                 } else {
                     // Default redirect for other roles
                     navigate(publicUser.HOME1);
