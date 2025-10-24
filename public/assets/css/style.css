@@ -23324,6 +23324,7 @@ HOME PAGE 15 START
 }
 .has-mega-menu .mega-menu {
   background-color: #fff;
+  
   display: flex;
   flex-wrap: nowrap;
   left: 0px;
