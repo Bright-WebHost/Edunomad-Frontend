@@ -11,7 +11,6 @@ function SignUpPopup() {
         agree: false,
         role: 'school'
     });
-    
     const [activeTab, setActiveTab] = useState('sign-candidate');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -25,7 +24,6 @@ function SignUpPopup() {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
-        
         if (errorMessage) setErrorMessage('');
     };
 
@@ -38,7 +36,6 @@ function SignUpPopup() {
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
-        
         if (tab === 'sign-candidate') {
             handleRoleChange('school');
         } else {
@@ -53,9 +50,7 @@ function SignUpPopup() {
     const handleGoogleLogin = async () => {
         setIsGoogleLoading(true);
         setErrorMessage('');
-
         try {
-            // Open Google OAuth in new window or redirect
             const width = 600;
             const height = 600;
             const left = (window.screen.width - width) / 2;
@@ -66,22 +61,14 @@ function SignUpPopup() {
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
-
-            // Listen for message from popup
             const messageHandler = (event) => {
                 if (event.origin !== 'https://api.edunomad.org') return;
-
                 if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                     const { token, user, requiresRoleCompletion } = event.data;
-                    
                     localStorage.setItem('token', token);
                     localStorage.setItem('user', JSON.stringify(user));
-
-                    // Close popup
                     if (popup) popup.close();
-
                     if (requiresRoleCompletion) {
-                        // Redirect to role completion page
                         navigate('/', { 
                             state: { 
                                 userId: user.id,
@@ -90,16 +77,12 @@ function SignUpPopup() {
                             } 
                         });
                     } else {
-                        // Regular login success
                         alert('Login successful!');
-                        
                         const modal = document.getElementById('sign_up_popup');
                         const modalInstance = bootstrap.Modal.getInstance(modal);
                         if (modalInstance) {
                             modalInstance.hide();
                         }
-
-                        // Redirect based on role
                         if (user.role === 'school' || user.role === 'parent') {
                             navigate('/school-dashboard');
                         } else if (user.role === 'teacher' || user.role === 'tutor') {
@@ -108,20 +91,15 @@ function SignUpPopup() {
                             navigate('/dashboard');
                         }
                     }
-
                     window.removeEventListener('message', messageHandler);
                 }
-
                 if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
                     setErrorMessage(event.data.message);
                     if (popup) popup.close();
                     window.removeEventListener('message', messageHandler);
                 }
             };
-
             window.addEventListener('message', messageHandler);
-
-            // Check if popup is closed without success
             const checkPopup = setInterval(() => {
                 if (popup && popup.closed) {
                     clearInterval(checkPopup);
@@ -129,9 +107,7 @@ function SignUpPopup() {
                     window.removeEventListener('message', messageHandler);
                 }
             }, 500);
-
         } catch (error) {
-            console.error('Google login error:', error);
             setErrorMessage('Google login failed. Please try again.');
             setIsGoogleLoading(false);
         }
@@ -141,19 +117,15 @@ function SignUpPopup() {
         e.preventDefault();
         setIsSubmitting(true);
         setErrorMessage('');
-
         if (!formData.agree) {
             setErrorMessage('You must agree to the terms and conditions');
             setIsSubmitting(false);
             return;
         }
-
         try {
             const response = await fetch('https://api.edunomad.org/api/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
@@ -162,27 +134,20 @@ function SignUpPopup() {
                     role: formData.role
                 })
             });
-
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.message || `Server error: ${response.status}`);
             }
-
             const data = await response.json();
-
             alert('Sign up successful! Please login to continue.');
-            
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
-            
             const modal = document.getElementById('sign_up_popup');
             const modalInstance = bootstrap.Modal.getInstance(modal);
             if (modalInstance) {
                 modalInstance.hide();
             }
-            
             navigate('/login');
-            
             setFormData({
                 username: '',
                 password: '',
@@ -192,7 +157,6 @@ function SignUpPopup() {
                 role: 'school'
             });
         } catch (error) {
-            console.error('Sign up error:', error);
             if (error.message.includes('Failed to fetch')) {
                 setErrorMessage('Cannot connect to the server. Please check if the server is running on port 7001.');
             } else {
@@ -202,7 +166,6 @@ function SignUpPopup() {
             setIsSubmitting(false);
         }
     };
-
     return (
         <div className="modal fade twm-sign-up" id="sign_up_popup" aria-hidden="true" aria-labelledby="sign_up_popupLabel" tabIndex={-1}>
             <div className="modal-dialog modal-dialog-centered">

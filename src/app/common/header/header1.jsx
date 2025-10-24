@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { publicUser } from "../../../globals/route-names";
 import { useState, useEffect } from "react";
 
+
 function Header1({ _config }) {
     const [menuActive, setMenuActive] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,6 +13,7 @@ function Header1({ _config }) {
         role: ''
     });
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
 
     useEffect(() => {
         // Check if user is logged in
@@ -34,9 +36,11 @@ function Header1({ _config }) {
         }
     }, []);
 
+
     function handleNavigationClick() {
         setMenuActive(!menuActive);
     }
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -47,9 +51,21 @@ function Header1({ _config }) {
         window.location.href = '/';
     };
 
+
     const toggleProfileDropdown = () => {
         setProfileDropdownOpen(!profileDropdownOpen);
     };
+
+    // Handle Sign Up modal
+    const handleSignUpClick = (e) => {
+        e.preventDefault();
+        if (typeof window !== 'undefined') {
+            const bootstrap = require('bootstrap');
+            const signUpModal = new bootstrap.Modal(document.getElementById('sign_up_popup'));
+            signUpModal.show();
+        }
+    };
+
 
     return (
         <>
@@ -98,8 +114,19 @@ function Header1({ _config }) {
                                             )}
                                         </>
                                     ) : (
-                                        // Hide both links when not logged in
-                                        null
+                                        // Show Post Job and Apply Job links for non-logged-in users that open modal
+                                        <>
+                                            <li className="has-child">
+                                                <a href="#" onClick={handleSignUpClick} style={{ cursor: 'pointer' }}>
+                                                    Post Job
+                                                </a>
+                                            </li>
+                                            <li className="has-child">
+                                                <a href="#" onClick={handleSignUpClick} style={{ cursor: 'pointer' }}>
+                                                    Apply Job
+                                                </a>
+                                            </li>
+                                        </>
                                     )}
                                     
                                     <li className="has-child"><a href="/contact-us">Contact Us</a></li>
@@ -165,7 +192,12 @@ function Header1({ _config }) {
                                     <div className="extra-cell">
                                         <div className="header-nav-btn-section">
                                             <div className="twm-nav-btn-left">
-                                                <a className="twm-nav-sign-up" data-bs-toggle="modal" href="#sign_up_popup" role="button">
+                                                <a 
+                                                    className="twm-nav-sign-up" 
+                                                    href="#" 
+                                                    onClick={handleSignUpClick}
+                                                    role="button"
+                                                >
                                                     <i className="feather-log-in"></i> Sign Up
                                                 </a>
                                             </div>
@@ -182,6 +214,7 @@ function Header1({ _config }) {
                     </div>
                 </div>
             </header>
+
 
             <style jsx>{`
                 .user-profile-dropdown {
@@ -273,6 +306,15 @@ function Header1({ _config }) {
                 .logout-btn:hover {
                     background-color: #c82333;
                 }
+
+                .twm-nav-sign-up {
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .twm-nav-sign-up:hover {
+                    text-decoration: none;
+                }
                 
                 @media (max-width: 768px) {
                     .dropdown-menu {
@@ -281,9 +323,11 @@ function Header1({ _config }) {
                 }
             `}</style>
 
+
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
         </>
     )
 }
+
 
 export default Header1;
