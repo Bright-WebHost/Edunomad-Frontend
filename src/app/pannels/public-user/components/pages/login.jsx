@@ -15,7 +15,7 @@ function LoginPage() {
     const [showEmployerPassword, setShowEmployerPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-    // Google OAuth popup handler
+    // Handle Google OAuth message from popup
     useEffect(() => {
         const handleMessage = (event) => {
             // For security, you might want to check the origin
@@ -38,7 +38,9 @@ function LoginPage() {
                         } 
                     });
                 } else {
+                    // Regular login success
                     alert('Login successful!');
+                    
                     // Redirect based on user role
                     if (user.role === 'school' || user.role === 'parent') {
                         navigate(canRoute(candidate.DASHBOARD));
@@ -49,19 +51,26 @@ function LoginPage() {
                     }
                 }
             }
+
             if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
                 setError(event.data.message);
                 setIsGoogleLoading(false);
             }
         };
+
         window.addEventListener('message', handleMessage);
-        return () => window.removeEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
     }, [navigate]);
 
     const handleGoogleLogin = async (userType = 'candidate') => {
         setIsGoogleLoading(true);
         setError('');
+
         try {
+            // Open Google OAuth in new window
             const width = 600;
             const height = 600;
             const left = (window.screen.width - width) / 2;
@@ -72,13 +81,17 @@ function LoginPage() {
                 'Google Login',
                 `width=${width},height=${height},left=${left},top=${top}`
             );
+
+            // Check if popup is closed without success
             const checkPopup = setInterval(() => {
                 if (popup && popup.closed) {
                     clearInterval(checkPopup);
                     setIsGoogleLoading(false);
                 }
             }, 500);
+
         } catch (error) {
+            console.error('Google login error:', error);
             setError('Google login failed. Please try again.');
             setIsGoogleLoading(false);
         }
@@ -88,70 +101,89 @@ function LoginPage() {
         event.preventDefault();
         setIsLoading({ ...isLoading, candidate: true });
         setError('');
+        
         try {
             const response = await fetch('https://api.edunomad.org/api/auth/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
                     email: candidateEmail,
                     password: candidatePassword
                 })
             });
+
             const data = await response.json();
+            
             if (response.ok) {
+                // Store token and user data
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
                     navigate(canRoute(candidate.DASHBOARD));
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
                     navigate(empRoute(employer.DASHBOARD));
                 } else {
+                    // Default redirect for other roles
                     navigate(publicUser.HOME1);
                 }
             } else {
                 setError(data.message || 'Login failed');
             }
-        } catch {
+        } catch (error) {
+            console.error('Login error:', error);
             setError('Cannot connect to server. Please try again later.');
         } finally {
             setIsLoading({ ...isLoading, candidate: false });
         }
-    };
+    }
 
     const handleEmployerLogin = async (event) => {
         event.preventDefault();
         setIsLoading({ ...isLoading, employer: true });
         setError('');
+        
         try {
             const response = await fetch('https://api.edunomad.org/api/auth/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    },
                 body: JSON.stringify({
                     email: employerEmail,
                     password: employerPassword
                 })
             });
+
             const data = await response.json();
+            
             if (response.ok) {
+                // Store token and user data
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
                     navigate(canRoute(candidate.DASHBOARD));
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
                     navigate(empRoute(employer.DASHBOARD));
                 } else {
+                    // Default redirect for other roles
                     navigate(publicUser.HOME1);
                 }
             } else {
                 setError(data.message || 'Login failed');
             }
-        } catch {
+        } catch (error) {
+            console.error('Login error:', error);
             setError('Cannot connect to server. Please try again later.');
         } finally {
             setIsLoading({ ...isLoading, employer: false });
         }
-    };
-
+    }
 
     return (
         <>
