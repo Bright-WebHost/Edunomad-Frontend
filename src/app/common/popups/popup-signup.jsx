@@ -50,12 +50,32 @@ function SignUpPopup() {
         setShowPassword(!showPassword);
     };
 
+    // Function to properly close modal
+    const closeModal = () => {
+        const modal = document.getElementById('sign_up_popup');
+        if (modal) {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+            
+            // Force remove modal backdrop if it persists
+            setTimeout(() => {
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    };
+
     const handleGoogleLogin = async () => {
         setIsGoogleLoading(true);
         setErrorMessage('');
 
         try {
-            // Open Google OAuth in new window or redirect
             const width = 600;
             const height = 600;
             const left = (window.screen.width - width) / 2;
@@ -67,7 +87,6 @@ function SignUpPopup() {
                 `width=${width},height=${height},left=${left},top=${top}`
             );
 
-            // Listen for message from popup
             const messageHandler = (event) => {
                 if (event.origin !== 'https://api.edunomad.org') return;
 
@@ -77,11 +96,12 @@ function SignUpPopup() {
                     localStorage.setItem('token', token);
                     localStorage.setItem('user', JSON.stringify(user));
 
-                    // Close popup
                     if (popup) popup.close();
+                    window.removeEventListener('message', messageHandler);
+
+                    closeModal();
 
                     if (requiresRoleCompletion) {
-                        // Redirect to role completion page
                         navigate('/', { 
                             state: { 
                                 userId: user.id,
@@ -90,16 +110,6 @@ function SignUpPopup() {
                             } 
                         });
                     } else {
-                        // Regular login success
-                        alert('Login successful!');
-                        
-                        const modal = document.getElementById('sign_up_popup');
-                        const modalInstance = bootstrap.Modal.getInstance(modal);
-                        if (modalInstance) {
-                            modalInstance.hide();
-                        }
-
-                        // Redirect based on role
                         if (user.role === 'school' || user.role === 'parent') {
                             navigate('/school-dashboard');
                         } else if (user.role === 'teacher' || user.role === 'tutor') {
@@ -108,20 +118,18 @@ function SignUpPopup() {
                             navigate('/dashboard');
                         }
                     }
-
-                    window.removeEventListener('message', messageHandler);
                 }
 
                 if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
                     setErrorMessage(event.data.message);
                     if (popup) popup.close();
                     window.removeEventListener('message', messageHandler);
+                    setIsGoogleLoading(false);
                 }
             };
 
             window.addEventListener('message', messageHandler);
 
-            // Check if popup is closed without success
             const checkPopup = setInterval(() => {
                 if (popup && popup.closed) {
                     clearInterval(checkPopup);
@@ -170,19 +178,10 @@ function SignUpPopup() {
 
             const data = await response.json();
 
-            alert('Sign up successful! Please login to continue.');
-            
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            
-            const modal = document.getElementById('sign_up_popup');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
-            
-            navigate('/login');
-            
+            // Close modal first
+            closeModal();
+
+            // Clear form data
             setFormData({
                 username: '',
                 password: '',
@@ -191,6 +190,15 @@ function SignUpPopup() {
                 agree: false,
                 role: 'school'
             });
+
+            // Reset error message
+            setErrorMessage('');
+
+            // Wait for modal to close before navigation
+            setTimeout(() => {
+                navigate('/login', { replace: false });
+            }, 300);
+            
         } catch (error) {
             console.error('Sign up error:', error);
             if (error.message.includes('Failed to fetch')) {
@@ -203,6 +211,13 @@ function SignUpPopup() {
         }
     };
 
+    const handleLoginRedirect = () => {
+        closeModal();
+        setTimeout(() => {
+            navigate('/login', { replace: false });
+        }, 300);
+    };
+
     return (
         <div className="modal fade twm-sign-up" id="sign_up_popup" aria-hidden="true" aria-labelledby="sign_up_popupLabel" tabIndex={-1}>
             <div className="modal-dialog modal-dialog-centered">
@@ -211,7 +226,13 @@ function SignUpPopup() {
                         <div className="modal-header">
                             <h2 className="modal-title" id="sign_up_popupLabel">Sign Up</h2>
                             <p>Sign Up and get access to all the features of EduNomad Connect</p>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            <button 
+                                type="button" 
+                                className="btn-close" 
+                                data-bs-dismiss="modal" 
+                                aria-label="Close"
+                                onClick={closeModal}
+                            />
                         </div>
                         <div className="modal-body">
                             {errorMessage && (
@@ -370,15 +391,13 @@ function SignUpPopup() {
                                                             I agree to the <a href="#">Terms and conditions</a>
                                                         </label>
                                                         <p className="mt-2">Already registered?
-                                                             <a href='login'  
-                                                                className="twm-backto-login" 
-                                                                data-bs-target="#sign_up_popup2" 
-                                                                // data-bs-toggle="modal" 
-                                                                // data-bs-dismiss="modal"
-                                                                 onClick={() => navigate("/login")}
+                                                             <button 
+                                                                type="button"
+                                                                className="twm-backto-login btn btn-link p-0 ms-1" 
+                                                                onClick={handleLoginRedirect}
                                                             >
                                                                 Log in here
-                                                            </a>
+                                                            </button>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -493,10 +512,9 @@ function SignUpPopup() {
                                                         </label>
                                                         <p className="mt-2">Already registered?
                                                             <button 
-                                                                className="twm-backto-login" 
-                                                                data-bs-target="#sign_up_popup2" 
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-dismiss="modal"
+                                                                type="button"
+                                                                className="twm-backto-login btn btn-link p-0 ms-1" 
+                                                                onClick={handleLoginRedirect}
                                                             >
                                                                 Log in here
                                                             </button>
