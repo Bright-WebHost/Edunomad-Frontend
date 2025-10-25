@@ -96,6 +96,9 @@ function LoginPage() {
             setIsGoogleLoading(false);
         }
     };
+       const handleBackToHome = () => {
+        navigate('/', { replace: true });
+    };
 
     const handleCandidateLogin = async (event) => {
         event.preventDefault();
@@ -240,6 +243,16 @@ function LoginPage() {
                                                     Continue with Google
                                                 </>
                                             )}
+                                        </button>
+                                    </div>
+                                     <div className="mb-4">
+                                        <button 
+                                            type="button"
+                                            className="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center"
+                                            onClick={handleBackToHome}
+                                        >
+                                            <i className="fas fa-home me-2"></i>
+                                            Back to Home
                                         </button>
                                     </div>
 
