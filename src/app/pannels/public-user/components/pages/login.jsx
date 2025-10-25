@@ -18,8 +18,8 @@ function LoginPage() {
     // Handle Google OAuth message from popup
     useEffect(() => {
         const handleMessage = (event) => {
-            // For security, you might want to check the origin
-            // if (event.origin !== 'http://localhost:7001') return;
+            // Security check - verify origin
+            if (event.origin !== 'https://api.edunomad.org') return;
 
             if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                 const { token, user, requiresRoleCompletion } = event.data;
@@ -29,31 +29,30 @@ function LoginPage() {
                 setIsGoogleLoading(false);
 
                 if (requiresRoleCompletion) {
-                    // Redirect to role completion page
+                    // Redirect to home page (/) for role selection
                     navigate('/', { 
                         state: { 
                             userId: user.id,
                             email: user.email,
-                            username: user.username 
-                        } 
+                            username: user.username,
+                            requiresRoleCompletion: true
+                        },
+                        replace: true
                     });
                 } else {
-                    // Regular login success
-                    alert('Login successful!');
-                    
-                    // Redirect based on user role
+                    // Regular login success - redirect based on role
                     if (user.role === 'school' || user.role === 'parent') {
-                        navigate(canRoute('/'));
+                        navigate(canRoute('/'), { replace: true });
                     } else if (user.role === 'teacher' || user.role === 'tutor') {
-                        navigate(empRoute(employer.DASHBOARD));
+                        navigate(empRoute(employer.DASHBOARD), { replace: true });
                     } else {
-                        navigate(publicUser.HOME1);
+                        navigate(publicUser.HOME1, { replace: true });
                     }
                 }
             }
 
             if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
-                setError(event.data.message);
+                setError(event.data.message || 'Google login failed. Please try again.');
                 setIsGoogleLoading(false);
             }
         };
@@ -65,7 +64,7 @@ function LoginPage() {
         };
     }, [navigate]);
 
-    const handleGoogleLogin = async (userType = 'candidate') => {
+    const handleGoogleLogin = async () => {
         setIsGoogleLoading(true);
         setError('');
 
@@ -97,6 +96,10 @@ function LoginPage() {
         }
     };
 
+    const handleBackToHome = () => {
+        navigate('/', { replace: true });
+    };
+
     const handleCandidateLogin = async (event) => {
         event.preventDefault();
         setIsLoading({ ...isLoading, candidate: true });
@@ -123,12 +126,11 @@ function LoginPage() {
                 
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute('/'));
+                    navigate(canRoute('/'), { replace: true });
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute(employer.DASHBOARD));
+                    navigate(empRoute(employer.DASHBOARD), { replace: true });
                 } else {
-                    // Default redirect for other roles
-                    navigate(publicUser.HOME1);
+                    navigate(publicUser.HOME1, { replace: true });
                 }
             } else {
                 setError(data.message || 'Login failed');
@@ -151,7 +153,7 @@ function LoginPage() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    },
+                },
                 body: JSON.stringify({
                     email: employerEmail,
                     password: employerPassword
@@ -167,12 +169,11 @@ function LoginPage() {
                 
                 // Redirect based on user role
                 if (data.user.role === 'school' || data.user.role === 'parent') {
-                    navigate(canRoute('/'));
+                    navigate(canRoute('/'), { replace: true });
                 } else if (data.user.role === 'teacher' || data.user.role === 'tutor') {
-                    navigate(empRoute(employer.DASHBOARD));
+                    navigate(empRoute(employer.DASHBOARD), { replace: true });
                 } else {
-                    // Default redirect for other roles
-                    navigate(publicUser.HOME1);
+                    navigate(publicUser.HOME1, { replace: true });
                 }
             } else {
                 setError(data.message || 'Login failed');
@@ -201,7 +202,7 @@ function LoginPage() {
                             <div className="twm-log-reg-form-wrap">
                                 <div className="twm-log-reg-logo-head">
                                     <NavLink to={publicUser.HOME1}>
-                                         <img src="assets/images/Eduno logo.png" className="logo-img"/>
+                                        <img src="assets/images/Eduno logo.png" className="logo-img" alt="Logo"/>
                                         <h3 className='nav-text-ed'>EduNomad Connect</h3>
                                     </NavLink>
                                 </div>
@@ -213,16 +214,17 @@ function LoginPage() {
                                     </div>
                                     {error && (
                                         <div className="alert alert-danger mt-3" role="alert">
+                                            <i className="fas fa-exclamation-circle me-2"></i>
                                             {error}
                                         </div>
                                     )}
                                     
                                     {/* Google Login Button */}
-                                    <div className="mb-4">
+                                    <div className="mb-3">
                                         <button 
                                             type="button"
                                             className="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center"
-                                            onClick={() => handleGoogleLogin('candidate')}
+                                            onClick={handleGoogleLogin}
                                             disabled={isGoogleLoading}
                                         >
                                             {isGoogleLoading ? (
@@ -240,6 +242,18 @@ function LoginPage() {
                                                     Continue with Google
                                                 </>
                                             )}
+                                        </button>
+                                    </div>
+
+                                    {/* Back to Home Button */}
+                                    <div className="mb-4">
+                                        <button 
+                                            type="button"
+                                            className="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center"
+                                            onClick={handleBackToHome}
+                                        >
+                                            <i className="fas fa-home me-2"></i>
+                                            Back to Home
                                         </button>
                                     </div>
 
@@ -402,6 +416,7 @@ function LoginPage() {
                     transform: translateY(-50%);
                     cursor: pointer;
                     color: #777;
+                    z-index: 5;
                 }
                 
                 .password-toggle-icon:hover {
@@ -409,13 +424,40 @@ function LoginPage() {
                 }
 
                 .btn-outline-danger {
-                    border-color: #db4437;
+                    border: 2px solid #db4437;
                     color: #db4437;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
                 }
 
                 .btn-outline-danger:hover {
                     background-color: #db4437;
+                    border-color: #db4437;
                     color: white;
+                }
+
+                .btn-outline-danger:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+
+                .btn-outline-primary {
+                    border: 2px solid #0d6efd;
+                    color: #0d6efd;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                }
+
+                .btn-outline-primary:hover {
+                    background-color: #0d6efd;
+                    border-color: #0d6efd;
+                    color: white;
+                }
+
+                .alert-danger {
+                    display: flex;
+                    align-items: center;
+                    border-radius: 8px;
                 }
                 `}
             </style>
