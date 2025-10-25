@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min';
 
@@ -18,6 +18,20 @@ function SignUpPopup() {
     const [showPassword, setShowPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const navigate = useNavigate();
+
+    // Cleanup function to ensure modal is properly closed
+    useEffect(() => {
+        return () => {
+            // Cleanup on component unmount
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        };
+    }, []);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -50,7 +64,7 @@ function SignUpPopup() {
         setShowPassword(!showPassword);
     };
 
-    // Function to properly close modal
+    // Enhanced function to properly close modal and clean up
     const closeModal = () => {
         const modal = document.getElementById('sign_up_popup');
         if (modal) {
@@ -58,16 +72,22 @@ function SignUpPopup() {
             if (modalInstance) {
                 modalInstance.hide();
             }
-            
-            // Force remove modal backdrop if it persists
-            setTimeout(() => {
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.remove();
-                }
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-            }, 300);
+        }
+        
+        // Immediate cleanup
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Reset modal state
+        if (modal) {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            modal.removeAttribute('aria-modal');
         }
     };
 
@@ -99,25 +119,30 @@ function SignUpPopup() {
                     if (popup) popup.close();
                     window.removeEventListener('message', messageHandler);
 
+                    // Complete modal cleanup before navigation
                     closeModal();
 
-                    if (requiresRoleCompletion) {
-                        navigate('/', { 
-                            state: { 
-                                userId: user.id,
-                                email: user.email,
-                                username: user.username 
-                            } 
-                        });
-                    } else {
-                        if (user.role === 'school' || user.role === 'parent') {
-                            navigate('/school-dashboard');
-                        } else if (user.role === 'teacher' || user.role === 'tutor') {
-                            navigate('/teacher-dashboard');
+                    // Navigate after cleanup
+                    setTimeout(() => {
+                        if (requiresRoleCompletion) {
+                            navigate('/', { 
+                                state: { 
+                                    userId: user.id,
+                                    email: user.email,
+                                    username: user.username 
+                                },
+                                replace: true
+                            });
                         } else {
-                            navigate('/dashboard');
+                            if (user.role === 'school' || user.role === 'parent') {
+                                navigate('/school-dashboard', { replace: true });
+                            } else if (user.role === 'teacher' || user.role === 'tutor') {
+                                navigate('/teacher-dashboard', { replace: true });
+                            } else {
+                                navigate('/dashboard', { replace: true });
+                            }
                         }
-                    }
+                    }, 100);
                 }
 
                 if (event.data.type === 'GOOGLE_OAUTH_ERROR') {
@@ -178,9 +203,6 @@ function SignUpPopup() {
 
             const data = await response.json();
 
-            // Close modal first
-            closeModal();
-
             // Clear form data
             setFormData({
                 username: '',
@@ -191,13 +213,17 @@ function SignUpPopup() {
                 role: 'school'
             });
 
-            // Reset error message
+            // Reset states
             setErrorMessage('');
+            setIsSubmitting(false);
 
-            // Wait for modal to close before navigation
+            // Complete modal cleanup
+            closeModal();
+
+            // Navigate after complete cleanup
             setTimeout(() => {
-                navigate('/login', { replace: false });
-            }, 300);
+                navigate('/login', { replace: true });
+            }, 100);
             
         } catch (error) {
             console.error('Sign up error:', error);
@@ -206,16 +232,16 @@ function SignUpPopup() {
             } else {
                 setErrorMessage(error.message || 'An unexpected error occurred. Please try again.');
             }
-        } finally {
             setIsSubmitting(false);
         }
     };
 
     const handleLoginRedirect = () => {
         closeModal();
+        
         setTimeout(() => {
-            navigate('/login', { replace: false });
-        }, 300);
+            navigate('/login', { replace: true });
+        }, 100);
     };
 
     return (
@@ -242,60 +268,7 @@ function SignUpPopup() {
                                 </div>
                             )}
                             
-                            {/* Google Sign In Button */}
-                            {/* <div className="mb-4">
-                                <button 
-                                    type="button"
-                                    className="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center"
-                                    onClick={handleGoogleLogin}
-                                    disabled={isGoogleLoading}
-                                >
-                                    {isGoogleLoading ? (
-                                        <>
-                                            <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                                            Connecting...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <img 
-                                                src="https://developers.google.com/identity/images/g-logo.png" 
-                                                alt="Google" 
-                                                style={{ width: '18px', height: '18px', marginRight: '10px' }}
-                                            />
-                                            Continue with Google
-                                        </>
-                                    )}
-                                </button>
-                            </div> */}
-
-                            {/* <div className="position-relative text-center mb-4">
-                                <hr />
-                                <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
-                                    Or continue with
-                                </span>
-                            </div> */}
-
                             <div className="twm-tabs-style-2">
-                                {/* <ul className="nav nav-tabs" id="myTab" role="tablist">
-                                    <li className="nav-item" role="presentation">
-                                        <button 
-                                            className={`nav-link ${activeTab === 'sign-candidate' ? 'active' : ''}`} 
-                                            onClick={() => handleTabChange('sign-candidate')}
-                                            type="button"
-                                        >
-                                            <i className="fas fa-user-tie me-2"></i>School/Parent
-                                        </button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button 
-                                            className={`nav-link ${activeTab === 'sign-Employer' ? 'active' : ''}`} 
-                                            onClick={() => handleTabChange('sign-Employer')}
-                                            type="button"
-                                        >
-                                            <i className="fas fa-building me-2"></i>Teacher/Tutor
-                                        </button>
-                                    </li>
-                                </ul> */}
                                 <div className="tab-content" id="myTabContent">
                                     {/* School/Parent Signup */}
                                     <div className={`tab-pane fade ${activeTab === 'sign-candidate' ? 'show active' : ''}`} id="sign-candidate">
