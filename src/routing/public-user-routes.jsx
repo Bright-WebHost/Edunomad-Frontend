@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { publicUser } from "../globals/route-names";
 import Home1Page from "../app/pannels/public-user/components/home/index";
 import Home2Page from "../app/pannels/public-user/components/home/index2";
@@ -62,8 +62,19 @@ import Register from "../app/pannels/public-user/components/pages/Register";
 import SignInPage from "../app/common/popups/popup-signin";
 import SignUpPage from "../app/common/popups/popup-signup";
 import OAuthRedirect from "../app/pannels/public-user/components/OAuthRedirect";
+import { initGA, logPageView } from "../analytics";
+import { useEffect } from "react";
 
 function PublicUserRoutes() {
+    const location = useLocation();
+
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  useEffect(() => {
+    logPageView(location.pathname + location.search);
+  }, [location]);
     return (
         <Routes>
             <Route path={publicUser.INITIAL} element={<Home3Page />} />
