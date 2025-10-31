@@ -158,7 +158,7 @@ function Home3Page() {
                                         <JobZImage src="/images/City/UK.jpg" alt="" />
                                         <div className="twm-city-info">
                                             <div className="twm-city-jobs">125 Jobs</div>
-                                            <h4 className="twm-title"><NavLink to={publicUser.jobs.LIST}>UK</NavLink></h4>
+                                            <h4 className="twm-title"><NavLink to='/'>UK</NavLink></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@ function Home3Page() {
                                                 <JobZImage src="images/City/Egypt.jpg" alt="" />
                                                 <div className="twm-city-info">
                                                     <div className="twm-city-jobs">190 Jobs</div>
-                                                    <h4 className="twm-title"><NavLink to={publicUser.jobs.LIST}>Egypt</NavLink></h4>
+                                                    <h4 className="twm-title"><NavLink to='/'>Egypt</NavLink></h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -182,7 +182,7 @@ function Home3Page() {
                                                 <JobZImage src="images/City/Kenya.jpg" alt="" />
                                                 <div className="twm-city-info">
                                                     <div className="twm-city-jobs">220 Jobs</div>
-                                                    <h4 className="twm-title"><NavLink to={publicUser.jobs.LIST}>Kenya</NavLink></h4>
+                                                    <h4 className="twm-title"><NavLink to='/'>Kenya</NavLink></h4>
                                                 </div>
                                             </div>
                                         </div>

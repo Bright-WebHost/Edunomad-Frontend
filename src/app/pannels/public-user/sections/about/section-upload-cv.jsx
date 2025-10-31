@@ -11,7 +11,7 @@ function SectionUploadCV() {
                             <div className="col-lg-4 col-md-12">
                                 <div className="twm-explore-media-wrap">
                                     <div className="twm-media">
-                                        <JobZImage src="images/background/gir-large.png" alt="" />
+                                        <JobZImage src="images/allimg/edunomad about.png" alt="" />
                                     </div>
                                 </div>
                             </div>
