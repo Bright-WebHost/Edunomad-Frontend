@@ -53,7 +53,8 @@ function Footer() {
                                     </div>
                                     <p>Empowering educators and connecting learning communities across the globe.</p>
                                     <ul className="ftr-list">
-                                        <li><p><span>Address :</span>65 Sunset CA 90026, USA </p></li>
+                                        <li><p><span>Address :</span>1 Impasse de la Plaine Bleue
+38390 Montalieu-Vercieu, France</p></li>
                                         <li><p><span>Email :</span>example@max.com</p></li>
                                         <li><p><span>Call :</span>555-555-1234</p></li>
                                     </ul>

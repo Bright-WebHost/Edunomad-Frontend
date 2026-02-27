@@ -19,7 +19,7 @@ function LoginPage() {
     useEffect(() => {
         const handleMessage = (event) => {
             // For security, you might want to check the origin
-            // if (event.origin !== 'http://localhost:7001') return;
+            // if (event.origin !== 'api.edunomad.org') return;
 
             if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
                 const { token, user, requiresRoleCompletion } = event.data;

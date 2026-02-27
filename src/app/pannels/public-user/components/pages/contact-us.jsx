@@ -56,13 +56,14 @@ function ContactUsPage() {
                                                 <div className="c-info-column">
                                                     <div className="c-info-icon"><i className=" fas fa-map-marker-alt" /></div>
                                                     <h3 className="twm-title">In the bay area?</h3>
-                                                    <p>1363-1385 Sunset Blvd Los Angeles, CA 90026, USA</p>
+                                                    <p>1 Impasse de la Plaine Bleue
+38390 Montalieu-Vercieu, France</p>
                                                 </div>
                                                 <div className="c-info-column">
                                                     <div className="c-info-icon custome-size"><i className="fas fa-mobile-alt" /></div>
                                                     <h3 className="twm-title">Feel free to contact us</h3>
-                                                    <p><a href="tel:+216-761-8331">+2 900 234 4241</a></p>
-                                                    <p><a href="tel:+216-761-8331">+2 900 234 3219</a></p>
+                                                    <p><a href="tel:+917022268086">+91 7022268086</a></p>
+                                                    <p><a href="tel:+2348028866208">+234 8028866208</a></p>
                                                 </div>
                                                 <div className="c-info-column">
                                                     <div className="c-info-icon"><i className="fas fa-envelope" /></div>
@@ -82,7 +83,7 @@ function ContactUsPage() {
             <div className="gmap-outline">
                 <div className="google-map">
                     <div style={{ width: '100%' }}>
-                        <iframe height={460} src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3304.8534521658976!2d-118.2533646842856!3d34.073270780600225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c6fd9829c6f3%3A0x6ecd11bcf4b0c23a!2s1363%20Sunset%20Blvd%2C%20Los%20Angeles%2C%20CA%2090026%2C%20USA!5e0!3m2!1sen!2sin!4v1620815366832!5m2!1sen!2sin" />
+                        <iframe height={460}  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2781.223815470201!2d5.3986702757796206!3d45.80677581051705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478b47d7a5c4b993%3A0x25fb5fa3e984e2c6!2s1%20Imp.%20de%20la%20Plaine%20Bleue%2C%2038390%20Montalieu-Vercieu%2C%20France!5e0!3m2!1sen!2sin!4v1772174508211!5m2!1sen!2sin"/>
                     </div>
                 </div>
             </div>

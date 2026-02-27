@@ -136,7 +136,7 @@ function Footer1() {
               <div className="contact-info-column">
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
-                  <span>65 Sunset CA 90026, USA</span>
+                  <span className="company-description">1 Impasse de la Plaine Bleue 38390 Montalieu-Vercieu, France</span>
                 </div>
                 <div className="contact-item">
                   <Mail className="contact-icon" />
@@ -144,7 +144,11 @@ function Footer1() {
                 </div>
                 <div className="contact-item">
                   <Phone className="contact-icon" />
-                  <a href="tel:+15555551234" className="contact-link">+1 (555) 555-1234</a>
+                  <a href="tel:+917022268086" className="contact-link">+91 7022268086</a>
+                </div>
+                <div className="contact-item">
+                  <Phone className="contact-icon" />
+                  <a href="tel:+2348028866208" className="contact-link">+234 8028866208</a>
                 </div>
               </div>
             </div>
